@@ -9,7 +9,6 @@ import urllib.request
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def hello_world():
     return "<p>This is a Hello World application</p>"
@@ -26,6 +25,7 @@ def yt_dlp_monitor(d):
 
 @app.route("/yt2mp3", methods=['POST', 'OPTIONS'])
 def yt2mp3():
+    print(f"Request Method {request.method}")
     if request.method == "OPTIONS":
         headers = {
         "Access-Control-Allow-Origin": "*",
@@ -106,8 +106,9 @@ class AppURLOpener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0"
 
 
-@app.route("/video2mp3", methods=['POST'])
+@app.route("/video2mp3", methods=['POST', 'OPTIONS'])
 def video2mp3(request):
+    print(f"Request Method {request.method}")
     if request.method == "OPTIONS":
         headers = {
         "Access-Control-Allow-Origin": "*",
@@ -164,4 +165,4 @@ def video2mp3(request):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=8080)
