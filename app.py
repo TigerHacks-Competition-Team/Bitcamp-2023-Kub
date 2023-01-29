@@ -107,7 +107,7 @@ class AppURLOpener(urllib.request.FancyURLopener):
 
 
 @app.route("/video2mp3", methods=['POST', 'OPTIONS'])
-def video2mp3(request):
+def video2mp3():
     print(f"Request Method {request.method}")
     if request.method == "OPTIONS":
         headers = {
