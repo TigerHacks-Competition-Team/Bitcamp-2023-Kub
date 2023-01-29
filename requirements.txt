@@ -2,3 +2,4 @@ Flask==2.0.3
 Jinja2==3.1.2
 yt_dlp==2023.1.6
 google-cloud-storage==2.7.0
+Flask-Cors==3.0.10
