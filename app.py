@@ -14,7 +14,7 @@ from basic_pitch.inference import predict_and_save
 
 
 fb = firebase_admin.initialize_app()
-bucket = storage.bucket()
+bucket = storage.bucket("bitcamp-2023")
 db = firestore.client()
 app = Flask(__name__)
 
@@ -32,8 +32,8 @@ def yt_dlp_monitor(d):
         final_filename = d.get('info_dict').get('_filename')
 
 
-@app.route("/wav2piano", methods=['POST', 'OPTIONS'])
-def wav2piano():
+@app.route("/yt2wav", methods=['POST', 'OPTIONS'])
+def yt2wav():
     # intercept options request
     if request.method == "OPTIONS":
         headers = {
