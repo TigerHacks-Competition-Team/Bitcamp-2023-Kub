@@ -10,11 +10,7 @@ from firebase_admin import storage
 from firebase_admin import firestore
 from basic_pitch.inference import predict_and_save
 
-cred = None
-with open('/opt/firebase/bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json', 'r') as secret_file:
-    cred = credentials.Certificate(secret_file.read())
-
-fb = firebase_admin.initialize_app(cred)
+fb = firebase_admin.initialize_app("./bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json")
 bucket = storage.bucket("bitcamp-2023.appspot.com")
 db = firestore.client()
 app = Flask(__name__)
