@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: bitcamp-2023-kub-1.0
-        image: gcr.io/hoyahacks-376115/flask-kubernetes:1.0
+        image: gcr.io/bitcamp-2023/ingest-container:1.0
         resources:
           limits:
             memory: "128Mi"
