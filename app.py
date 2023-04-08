@@ -1,10 +1,7 @@
 from flask import Flask
 import yt_dlp
-from google.cloud import storage
 import os
 from flask import Response, request
-import json
-from flask_cors import CORS
 import urllib.request
 import subprocess
 import firebase_admin
@@ -13,7 +10,10 @@ from firebase_admin import storage
 from firebase_admin import firestore
 from basic_pitch.inference import predict_and_save
 
-cred = credentials.Certificate("/opt/firebase/bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json")
+sec_path = os.getenv('/opt/firebase', './secrets')
+cred = None
+with open(os.path.join(sec_path, 'bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json')) as fh:
+    cred = credentials.Certificate(fh.read())
 fb = firebase_admin.initialize_app(cred)
 bucket = storage.bucket("bitcamp-2023.appspot.com")
 db = firestore.client()
