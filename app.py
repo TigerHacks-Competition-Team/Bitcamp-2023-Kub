@@ -14,7 +14,7 @@ from basic_pitch.inference import predict_and_save
 
 
 fb = firebase_admin.initialize_app()
-bucket = storage.bucket("bitcamp-2023")
+bucket = storage.bucket("bitcamp-2023.appspot.com")
 db = firestore.client()
 app = Flask(__name__)
 
@@ -56,14 +56,17 @@ def yt2wav():
             'key': 'FFmpegExtractAudio',
             'preferredcodec': f'{extension}',
         }],
-        "outtmpl": "/tmp/%(id)s.%(ext)s",
+        "outtmpl": "./tmp/original",
         "no-part": True,
         "progress_hooks": [yt_dlp_monitor]
     }
 
     # parse request params
-    url = [request.json["url"]]  # youtube url to download
     docID = request.json["docID"]  # document ID in firestore
+    doc = db.collection("songs").document(docID).get().to_dict()
+    url = [doc["url"]]  # youtube url
+
+    print(f"Getting wav file for: {url} with docID: {docID}")
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
@@ -71,7 +74,7 @@ def yt2wav():
         except:
             return ('', 500)
 
-        wav_path = "/tmp/original.wav"
+        wav_path = "./tmp/original.wav"
 
         storage_path = f"songs/{docID}/original.wav"
         file = bucket.blob(storage_path)
@@ -120,22 +123,25 @@ def wav2piano():
         return ("OK", 200, headers)
 
     # parse request params
-    path = request.json["path"]  # cloud storage path
     docID = request.json["docID"]  # document ID in firestore
+    doc = db.collection("songs").document(docID).get().to_dict()
+    path = doc["original"]  # cloud storage path
 
-    # download piano wav asset
+    # download original wav asset
+    print("download original asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("/tmp/piano.wav")
+    blob.download_to_filename("./tmp/original.wav")
 
     # run spleeter
+    print("running spleeter")
     cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "/tmp/output"]
     subprocess.Popen(cmd).wait()
 
-    vocals_path = "/tmp/output/vocals.wav"
-    piano_path = "/tmp/output/piano.wav"
-    drums_path = "/tmp/output/drums.wav"
-    bass_path = "/tmp/output/bass.wav"
-    other_path = "/tmp/output/other.wav"
+    vocals_path = "./tmp/output/vocals.wav"
+    piano_path = "./tmp/output/piano.wav"
+    drums_path = "./tmp/output/drums.wav"
+    bass_path = "./tmp/output/bass.wav"
+    other_path = "./tmp/output/other.wav"
 
     vocals_storage = f"songs/{docID}/vocals.wav"
     piano_storage = f"songs/{docID}/piano.wav"
@@ -165,6 +171,7 @@ def wav2piano():
     }
 
     # update firestore document with wav link
+    print("uploading to firebase")
     db.collection(u"songs").document(docID).update(updated_doc)
 
     if request.method == 'POST':
@@ -194,43 +201,42 @@ def piano2midi():
         return ("OK", 200, headers)
 
     # parse request params
-    path = request.json["path"]  # cloud storage path
     docID = request.json["docID"]  # document ID in firestore
+    doc = db.collection("songs").document(docID).get().to_dict()
+    path = doc["piano"]  # cloud storage path
 
     # download piano wav asset
+    print("downloading piano wav asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("/tmp/piano.wav")
+    blob.download_to_filename("./tmp/piano.wav")
 
     # run base pitch to convert to midi
+    print("running base pitch")
     predict_and_save(
-        ["/tmp/piano.wav"],
-        "/tmp/output",
+        ["./tmp/piano.wav"],
+        "./tmp",
         True,
         True,
         False,
-        True,
+        False,
     )
 
-    midi_path = "/tmp/output/piano_basic_pitch.mid"
-    csv_path = "/tmp/output/piano_basic_pitch.csv"
-    midi_render_path = "/tmp/output/piano_basic_pitch.wav"
+    midi_path = "./tmp/piano_basic_pitch.mid"
+    csv_path = "./tmp/piano_basic_pitch.csv"
 
     midi_storage = f"songs/{docID}/midi.mid"
     csv_storage = f"songs/{docID}/midi.csv"
-    midi_render_storage = f"songs/{docID}/midi.wav"
 
     midi_file = bucket.blob(midi_storage)
     csv_file = bucket.blob(csv_storage)
-    midi_render_file = bucket.blob(midi_render_storage)
 
     midi_file.upload_from_filename(midi_path)
     csv_file.upload_from_filename(csv_path)
-    midi_render_file.upload_from_filename(midi_render_path)
 
+    print("upload to firebase")
     updated_doc = {
         u"midi": midi_storage,
         u"csv": csv_storage,
-        u"midi_render": midi_render_storage,
 
     }
 
