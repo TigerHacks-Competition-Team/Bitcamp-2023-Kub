@@ -3,3 +3,6 @@ Jinja2==3.1.2
 yt_dlp==2023.1.6
 google-cloud-storage==2.7.0
 Flask-Cors==3.0.10
+spleeter==2.3.2
+basic_pitch==0.2.3
+firebase-admin==6.1.0
