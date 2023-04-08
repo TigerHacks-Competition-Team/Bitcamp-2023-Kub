@@ -8,12 +8,13 @@ from flask_cors import CORS
 import urllib.request
 import subprocess
 import firebase_admin
+from firebase_admin import credentials
 from firebase_admin import storage
 from firebase_admin import firestore
 from basic_pitch.inference import predict_and_save
 
-
-fb = firebase_admin.initialize_app()
+cred = credentials.Certificate("/opt/firebase/bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json")
+fb = firebase_admin.initialize_app(cred)
 bucket = storage.bucket("bitcamp-2023.appspot.com")
 db = firestore.client()
 app = Flask(__name__)

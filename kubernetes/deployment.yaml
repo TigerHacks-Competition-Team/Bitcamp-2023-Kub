@@ -21,6 +21,17 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 8080
+        volumeMounts:
+        # volumes to mount
+        - name: secret-volume # matches secret name
+          # path for this secret to be available at
+          mountPath: "/opt/firebase"
+          readOnly: true # no editing!
+      volumes:
+      # create volumes
+      - name: secret-volume # name to match for mounting
+        secret:
+          secretName: firebase-secret # name of secret
 ---
 apiVersion: v1
 kind: Service
