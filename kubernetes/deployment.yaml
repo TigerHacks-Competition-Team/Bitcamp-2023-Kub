@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bitcamp-2023-kub
+  name: ingest
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: bitcamp-2023-kub-1.0
+      app: ingest-app-1.0
   template:
     metadata:
       labels:
-        app: bitcamp-2023-kub-1.0
+        app: ingest-app-1.0
     spec:
       containers:
-      - name: bitcamp-2023-kub-1.0
+      - name: ingest-container-1.0
         image: gcr.io/bitcamp-2023/ingest-container:1.0
         resources:
           limits:
@@ -25,10 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: bitcamp-2023-kub-service
+  name: ingest-service
 spec:
   selector:
-    app: bitcamp-2023-kub-deployment
+    app: ingest-deployment
   ports:
   - port: 8080
     targetPort: 8080
