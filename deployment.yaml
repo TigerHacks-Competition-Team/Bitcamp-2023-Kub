@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-app-deployment
+  name: bitcamp-2023-kub
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: flask-app-1.0
+      app: bitcamp-2023-kub-1.0
   template:
     metadata:
       labels:
-        app: flask-app-1.0
+        app: bitcamp-2023-kub-1.0
     spec:
       containers:
-      - name: flask-app-1.0
+      - name: bitcamp-2023-kub-1.0
         image: gcr.io/hoyahacks-376115/flask-kubernetes:1.0
         resources:
           limits:
@@ -25,10 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-app-service
+  name: bitcamp-2023-kub-service
 spec:
   selector:
-    app: flask-app-deployment
+    app: bitcamp-2023-kub-deployment
   ports:
   - port: 8080
     targetPort: 8080
