@@ -11,6 +11,7 @@ from firebase_admin import storage
 from firebase_admin import firestore
 from basic_pitch.inference import predict_and_save
 from spleeter.separator import Separator
+from pytube import YouTube
 
 cred = credentials.Certificate("./bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json")
 fb = firebase_admin.initialize_app(cred)
@@ -46,63 +47,49 @@ def yt2wav():
         return ("OK", 200, headers)
 
     # init ydl options (wav format)
-    global final_filename
-    extension = 'mp3'
-
-    ydl_opts = {
-        'format': f'{extension}/worstaudio/worst',
-        # Extract audio using ffmpeg
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': f'{extension}',
-        }],
-        "no-part": True,
-        "progress_hooks": [yt_dlp_monitor]
-    }
 
 
 
     # parse request params
     docID = request.json["docID"]  # document ID in firestore
     doc = db.collection("songs").document(docID).get().to_dict()
-    url = [doc["url"]]  # youtube url
+    url = doc["url"]  # youtube url
+
+    yt = YouTube(url)
+    yt.streams.filter(progressive=True, file_extension='mp3').order_by('resolution').desc().first().download()
 
     print(f"Getting wav file for: {url} with docID: {docID}")
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            error_code = ydl.download(url)
-        except:
-            return ('', 500)
 
-        files = os.listdir("./")
-        print(files)
-        files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp3"]
 
-        wav_path = files[0]
+    files = os.listdir("./")
+    print(files)
+    files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp3"]
 
-        storage_path = f"songs/{docID}/original.mp3"
-        file = bucket.blob(storage_path)
+    wav_path = files[0]
 
-        print("Uploading Audio to Bucket")
-        file.upload_from_filename(wav_path)
+    storage_path = f"songs/{docID}/original.mp3"
+    file = bucket.blob(storage_path)
 
-        final_filename = None
+    print("Uploading Audio to Bucket")
+    file.upload_from_filename(wav_path)
 
-        # update firestore document with wav link
-        db.collection(u"songs").document(docID).update({u"original": storage_path})
+    final_filename = None
 
-        if request.method == 'POST':
-            headers = {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST",
-                "Access-Control-Expose-Headers": "Content-Length, X-JSON",
-                "Access-Control-Allow-Headers":
-                "X-Client-Info, Content-Type, Authorization, Accept, Accept-Language, X-Authorization",
-            }
+    # update firestore document with wav link
+    db.collection(u"songs").document(docID).update({u"original": storage_path})
 
-            return ("SUCCESS", 200, headers)
+    if request.method == 'POST':
+        headers = {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Expose-Headers": "Content-Length, X-JSON",
+            "Access-Control-Allow-Headers":
+            "X-Client-Info, Content-Type, Authorization, Accept, Accept-Language, X-Authorization",
+        }
+
+        return ("SUCCESS", 200, headers)
 
     headers = {
         "Access-Control-Allow-Origin": "*",

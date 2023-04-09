@@ -6,3 +6,4 @@ Flask-Cors==3.0.10
 spleeter==2.3.2
 basic_pitch==0.2.3
 firebase-admin==6.1.0
+pytube==12.1.3
