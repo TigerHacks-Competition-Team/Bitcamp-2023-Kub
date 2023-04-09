@@ -144,14 +144,14 @@ def wav2piano():
         print("output directory already exists")
 
     cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
-    subprocess.Popen(cmd).wait(timeout=None)
+    subprocess.run(cmd)
 
     print("spleeter finished")
-    subprocess.Popen(["ffmpeg", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"]).wait(timeout=None)
-    subprocess.Popen(["ffmpeg", "-i", "output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/piano.mp3"]).wait(timeout=None)
-    subprocess.Popen(["ffmpeg", "-i", "output/original/drums.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/bass.mp3"]).wait(timeout=None)
-    subprocess.Popen(["ffmpeg", "-i", "output/original/bass.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/drums.mp3"]).wait(timeout=None)
-    subprocess.Popen(["ffmpeg", "-i", "output/original/other.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/other.mp3"]).wait(timeout=None)
+    subprocess.run(["ffmpeg", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"])
+    subprocess.run(["ffmpeg", "-i", "output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/piano.mp3"])
+    subprocess.run(["ffmpeg", "-i", "output/original/drums.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/bass.mp3"])
+    subprocess.run(["ffmpeg", "-i", "output/original/bass.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/drums.mp3"])
+    subprocess.run(["ffmpeg", "-i", "output/original/other.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/other.mp3"])
 
     vocals_path = "output/original/vocals.mp3"
     piano_path = "output/original/piano.mp3"
