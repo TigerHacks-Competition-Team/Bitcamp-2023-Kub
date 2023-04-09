@@ -141,11 +141,11 @@ def wav2piano():
     cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output", "./original.mp3"]
     subprocess.Popen(cmd).wait()
 
-    subprocess.Popen("ffmpeg -i ./output/vocals.wav -b:a 96k -acodec mp3 ./output/vocals.mp3").wait()
-    subprocess.Popen("ffmpeg -i ./output/piano.wav -b:a 96k -acodec mp3 ./output/piano.mp3").wait()
-    subprocess.Popen("ffmpeg -i ./output/drums.wav -b:a 96k -acodec mp3 ./output/drums.mp3").wait()
-    subprocess.Popen("ffmpeg -i ./output/bass.wav -b:a 96k -acodec mp3 ./output/bass.mp3").wait()
-    subprocess.Popen("ffmpeg -i ./output/other.wav -b:a 96k -acodec mp3 ./output/other.mp3").wait()
+    # subprocess.Popen("ffmpeg -i ./output/vocals.wav -b:a 96k -acodec mp3 ./output/vocals.mp3").wait()
+    # subprocess.Popen("ffmpeg -i ./output/piano.wav -b:a 96k -acodec mp3 ./output/piano.mp3").wait()
+    # subprocess.Popen("ffmpeg -i ./output/drums.wav -b:a 96k -acodec mp3 ./output/drums.mp3").wait()
+    # subprocess.Popen("ffmpeg -i ./output/bass.wav -b:a 96k -acodec mp3 ./output/bass.mp3").wait()
+    # subprocess.Popen("ffmpeg -i ./output/other.wav -b:a 96k -acodec mp3 ./output/other.mp3").wait()
 
     vocals_path = "./output/vocals.mp3"
     piano_path = "./output/piano.mp3"
@@ -233,7 +233,7 @@ def piano2midi():
     # run base pitch to convert to midi
     print("running base pitch")
     predict_and_save(
-        ["./piano.wav"],
+        ["./piano.mp3"],
         "./output",
         True,
         False,
