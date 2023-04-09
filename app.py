@@ -81,7 +81,7 @@ def yt2wav():
     final_filename = None
 
     # update firestore document with wav link
-    db.collection(u"songs").document(docID).update({u"original": storage_path})
+    db.collection(u"songs").document(docID).update({u"original": storage_path, u"title": yt.title})
 
     if request.method == 'POST':
         headers = {
