@@ -141,7 +141,12 @@ def wav2piano():
     cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "/output/", "./original.mp3"]
     subprocess.Popen(cmd).wait()
 
-    print(os.listdir("/output/original"))
+    try:
+        print(os.listdir("/"))
+        print(os.listdir("/output"))
+        print(os.listdir("/output/original"))
+    except:
+        print("printing list dir failed for one of them")
 
     subprocess.Popen(["ffmpeg", "-i", "/output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "/output/original/vocals.mp3"]).wait()
     subprocess.Popen(["ffmpeg", "-i", "/output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "/output/original/piano.mp3"]).wait()
