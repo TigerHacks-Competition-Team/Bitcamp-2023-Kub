@@ -50,6 +50,8 @@ def yt2wav():
 
 
 
+
+
     # parse request params
     docID = request.json["docID"]  # document ID in firestore
     doc = db.collection("songs").document(docID).get().to_dict()
@@ -66,7 +68,7 @@ def yt2wav():
     print(files)
     files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp4"]
 
-    subprocess.run(["ffmpeg", "-i", files[0], "-b:a", "96k", "-acodec", "mp3", "original.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", files[0], "-b:a", "96k", "-acodec", "mp3", "original.mp3"])
 
     wav_path = "original.mp3"
 
@@ -140,11 +142,11 @@ def wav2piano():
     #subprocess.run(cmd)
 
     print("spleeter finished")
-    subprocess.run(["ffmpeg", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"])
-    subprocess.run(["ffmpeg", "-i", "output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/piano.mp3"])
-    subprocess.run(["ffmpeg", "-i", "output/original/drums.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/bass.mp3"])
-    subprocess.run(["ffmpeg", "-i", "output/original/bass.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/drums.mp3"])
-    subprocess.run(["ffmpeg", "-i", "output/original/other.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/other.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", "output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/piano.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", "output/original/drums.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/bass.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", "output/original/bass.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/drums.mp3"])
+    subprocess.run(["ffmpeg", "-y", "-i", "output/original/other.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/other.mp3"])
 
     vocals_path = "output/original/vocals.mp3"
     piano_path = "output/original/piano.mp3"
