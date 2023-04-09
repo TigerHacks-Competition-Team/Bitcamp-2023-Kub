@@ -135,7 +135,7 @@ def wav2piano():
     except:
         print("output directory already exists")
 
-    separator = Separator('spleeter:5stems')
+    separator = Separator('spleeter:5stems', MWF=True)
     print("spleetering file")
     separator.separate_to_file('./original.mp3', 'output/', synchronous=True)
     #cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
