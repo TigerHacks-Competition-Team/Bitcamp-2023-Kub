@@ -138,16 +138,16 @@ def wav2piano():
 
     # run spleeter
     print("running spleeter")
+    try:
+        os.mkdir("output")
+    except:
+        print("output directory already exists")
+
+    subprocess.Popen(["sudo", "chmod", "777", "output/"]).wait(timeout=None)
     cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
     subprocess.Popen(cmd).wait(timeout=None)
 
-    try:
-        print(os.listdir("/"))
-        print(os.listdir("/output"))
-        print(os.listdir("/output/original"))
-    except:
-        print("printing list dir failed for one of them")
-
+    print("spleeter finished")
     subprocess.Popen(["ffmpeg", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"]).wait(timeout=None)
     subprocess.Popen(["ffmpeg", "-i", "output/original/piano.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/piano.mp3"]).wait(timeout=None)
     subprocess.Popen(["ffmpeg", "-i", "output/original/drums.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/bass.mp3"]).wait(timeout=None)
