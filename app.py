@@ -56,7 +56,7 @@ def yt2wav():
     url = doc["url"]  # youtube url
 
     yt = YouTube(url)
-    yt.streams.filter(progressive=True, file_extension='mp3').order_by('resolution').desc().first().download()
+    yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
 
     print(f"Getting wav file for: {url} with docID: {docID}")
 
@@ -64,9 +64,11 @@ def yt2wav():
 
     files = os.listdir("./")
     print(files)
-    files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp3"]
+    files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp4"]
 
-    wav_path = files[0]
+    subprocess.run(["ffmpeg", "-i", files[0], "-b:a", "96k", "-acodec", "mp3", "original.mp3"])
+
+    wav_path = "original.mp3"
 
     storage_path = f"songs/{docID}/original.mp3"
     file = bucket.blob(storage_path)
