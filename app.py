@@ -10,6 +10,7 @@ from firebase_admin import credentials
 from firebase_admin import storage
 from firebase_admin import firestore
 from basic_pitch.inference import predict_and_save
+from spleeter.separator import Separator
 
 cred = credentials.Certificate("./bitcamp-2023-firebase-adminsdk-zfq9y-9abf423e33.json")
 fb = firebase_admin.initialize_app(cred)
@@ -143,8 +144,10 @@ def wav2piano():
     except:
         print("output directory already exists")
 
-    cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
-    subprocess.run(cmd)
+    separator = Separator('spleeter:5stems')
+    separator.separate_to_file('./original.mp3', 'output/')
+    #cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
+    #subprocess.run(cmd)
 
     print("spleeter finished")
     subprocess.run(["ffmpeg", "-i", "output/original/vocals.wav", "-b:a", "96k", "-acodec", "mp3", "output/original/vocals.mp3"])

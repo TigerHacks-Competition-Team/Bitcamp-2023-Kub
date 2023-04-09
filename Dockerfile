@@ -13,8 +13,8 @@ RUN apt-get install -y python3-pip
 # Install all the dependencies required to run the Flask application
 RUN pip install -r requirements.txt
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=key.json
+#ENV GOOGLE_APPLICATION_CREDENTIALS=key.json
 # Expose the Docker container for the application to run on port 5000
-EXPOSE 3000
+EXPOSE 8080
 # The command required to run the Dockerized application
 CMD ["python3", "/app/app.py"]
