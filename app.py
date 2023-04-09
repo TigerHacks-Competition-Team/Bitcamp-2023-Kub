@@ -1,6 +1,7 @@
 from flask import Flask
 import yt_dlp
 import os
+import shutil
 from flask import Response, request
 import urllib.request
 import subprocess
@@ -208,19 +209,29 @@ def piano2midi():
     blob = bucket.blob(path)
     blob.download_to_filename("./piano.wav")
 
+    try:
+        shutil.rmtree("./output", ignore_errors=False, onerror=None)
+    except:
+        print("No dir output")
+
+    try:
+        os.mkdir("./output")
+    except:
+        print("Couldnt create output dir")
+
     # run base pitch to convert to midi
     print("running base pitch")
     predict_and_save(
         ["./piano.wav"],
-        "./",
-        True,
+        "./output",
         True,
         False,
         False,
+        True,
     )
 
-    midi_path = "./piano_basic_pitch.mid"
-    csv_path = "./piano_basic_pitch.csv"
+    midi_path = "output/piano_basic_pitch.mid"
+    csv_path = "output/piano_basic_pitch.csv"
 
     midi_storage = f"songs/{docID}/midi.mid"
     csv_storage = f"songs/{docID}/midi.csv"
