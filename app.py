@@ -54,7 +54,7 @@ def yt2wav():
             'key': 'FFmpegExtractAudio',
             'preferredcodec': f'{extension}',
         }],
-        "outtmpl": "./tmp/original",
+        "outtmpl": "./original",
         "no-part": True,
         "progress_hooks": [yt_dlp_monitor]
     }
@@ -72,7 +72,7 @@ def yt2wav():
         except:
             return ('', 500)
 
-        wav_path = "./tmp/original.wav"
+        wav_path = "./original.wav"
 
         storage_path = f"songs/{docID}/original.wav"
         file = bucket.blob(storage_path)
@@ -128,18 +128,18 @@ def wav2piano():
     # download original wav asset
     print("download original asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("./tmp/original.wav")
+    blob.download_to_filename("./original.wav")
 
     # run spleeter
     print("running spleeter")
-    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "/tmp/output"]
+    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output"]
     subprocess.Popen(cmd).wait()
 
-    vocals_path = "./tmp/output/vocals.wav"
-    piano_path = "./tmp/output/piano.wav"
-    drums_path = "./tmp/output/drums.wav"
-    bass_path = "./tmp/output/bass.wav"
-    other_path = "./tmp/output/other.wav"
+    vocals_path = "./output/vocals.wav"
+    piano_path = "./output/piano.wav"
+    drums_path = "./output/drums.wav"
+    bass_path = "./output/bass.wav"
+    other_path = "./output/other.wav"
 
     vocals_storage = f"songs/{docID}/vocals.wav"
     piano_storage = f"songs/{docID}/piano.wav"
@@ -206,21 +206,21 @@ def piano2midi():
     # download piano wav asset
     print("downloading piano wav asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("./tmp/piano.wav")
+    blob.download_to_filename("./piano.wav")
 
     # run base pitch to convert to midi
     print("running base pitch")
     predict_and_save(
-        ["./tmp/piano.wav"],
-        "./tmp",
+        ["./piano.wav"],
+        "./",
         True,
         True,
         False,
         False,
     )
 
-    midi_path = "./tmp/piano_basic_pitch.mid"
-    csv_path = "./tmp/piano_basic_pitch.csv"
+    midi_path = "./piano_basic_pitch.mid"
+    csv_path = "./piano_basic_pitch.csv"
 
     midi_storage = f"songs/{docID}/midi.mid"
     csv_storage = f"songs/{docID}/midi.csv"
