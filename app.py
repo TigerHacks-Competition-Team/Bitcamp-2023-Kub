@@ -147,11 +147,11 @@ def wav2piano():
     # subprocess.Popen("ffmpeg -i ./output/bass.wav -b:a 96k -acodec mp3 ./output/bass.mp3").wait()
     # subprocess.Popen("ffmpeg -i ./output/other.wav -b:a 96k -acodec mp3 ./output/other.mp3").wait()
 
-    vocals_path = "./output/vocals.mp3"
-    piano_path = "./output/piano.mp3"
-    drums_path = "./output/drums.mp3"
-    bass_path = "./output/bass.mp3"
-    other_path = "./output/other.mp3"
+    vocals_path = "./output/original/vocals.mp3"
+    piano_path = "./output/original/piano.mp3"
+    drums_path = "./output/original/drums.mp3"
+    bass_path = "./output/original/bass.mp3"
+    other_path = "./output/original/other.mp3"
 
     vocals_storage = f"songs/{docID}/vocals.mp3"
     piano_storage = f"songs/{docID}/piano.mp3"
