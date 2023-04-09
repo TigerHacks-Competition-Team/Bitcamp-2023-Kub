@@ -46,19 +46,20 @@ def yt2wav():
 
     # init ydl options (wav format)
     global final_filename
-    extension = 'wav'
+    extension = 'mp3'
 
     ydl_opts = {
-        'format': f'{extension}/bestaudio/best',
+        'format': f'{extension}/worstaudio/worst',
         # Extract audio using ffmpeg
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': f'{extension}',
         }],
-        "outtmpl": "./original",
         "no-part": True,
         "progress_hooks": [yt_dlp_monitor]
     }
+
+
 
     # parse request params
     docID = request.json["docID"]  # document ID in firestore
@@ -73,9 +74,13 @@ def yt2wav():
         except:
             return ('', 500)
 
-        wav_path = "./original.wav"
+        files = os.listdir("./")
+        print(files)
+        files = [file for file in files if os.path.isfile(file) and len(file.split(".")) > 1 and file.split(".")[1] == "mp3"]
 
-        storage_path = f"songs/{docID}/original.wav"
+        wav_path = files[0]
+
+        storage_path = f"songs/{docID}/original.mp3"
         file = bucket.blob(storage_path)
 
         print("Uploading Audio to Bucket")
@@ -129,24 +134,30 @@ def wav2piano():
     # download original wav asset
     print("download original asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("./original.wav")
+    blob.download_to_filename("./original.mp3")
 
     # run spleeter
     print("running spleeter")
-    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output", "./original.wav"]
+    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output", "./original.mp3"]
     subprocess.Popen(cmd).wait()
 
-    vocals_path = "./output/vocals.wav"
-    piano_path = "./output/piano.wav"
-    drums_path = "./output/drums.wav"
-    bass_path = "./output/bass.wav"
-    other_path = "./output/other.wav"
+    subprocess.Popen("ffmpeg -i ./output/vocals.wav -b:a 96k -acodec mp3 ./output/vocals.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/piano.wav -b:a 96k -acodec mp3 ./output/piano.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/drums.wav -b:a 96k -acodec mp3 ./output/drums.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/bass.wav -b:a 96k -acodec mp3 ./output/bass.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/other.wav -b:a 96k -acodec mp3 ./output/other.mp3").wait()
 
-    vocals_storage = f"songs/{docID}/vocals.wav"
-    piano_storage = f"songs/{docID}/piano.wav"
-    drums_storage = f"songs/{docID}/drums.wav"
-    bass_storage = f"songs/{docID}/bass.wav"
-    other_storage = f"songs/{docID}/other.wav"
+    vocals_path = "./output/vocals.mp3"
+    piano_path = "./output/piano.mp3"
+    drums_path = "./output/drums.mp3"
+    bass_path = "./output/bass.mp3"
+    other_path = "./output/other.mp3"
+
+    vocals_storage = f"songs/{docID}/vocals.mp3"
+    piano_storage = f"songs/{docID}/piano.mp3"
+    drums_storage = f"songs/{docID}/drums.mp3"
+    bass_storage = f"songs/{docID}/bass.mp3"
+    other_storage = f"songs/{docID}/other.mp3"
 
     vocals_file = bucket.blob(vocals_storage)
     piano_file = bucket.blob(piano_storage)
@@ -207,7 +218,7 @@ def piano2midi():
     # download piano wav asset
     print("downloading piano wav asset")
     blob = bucket.blob(path)
-    blob.download_to_filename("./piano.wav")
+    blob.download_to_filename("./piano.mp3")
 
     try:
         shutil.rmtree("./output", ignore_errors=False, onerror=None)
