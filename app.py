@@ -141,11 +141,11 @@ def wav2piano():
     cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output", "./original.mp3"]
     subprocess.Popen(cmd).wait()
 
-    subprocess.Popen("ffmpeg -i ../output/original/vocals.wav -b:a 96k -acodec mp3 ./output/original/vocals.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/original/vocals.wav -b:a 96k -acodec mp3 ./output/original/vocals.mp3").wait()
     subprocess.Popen("ffmpeg -i ./output/original/piano.wav -b:a 96k -acodec mp3 ./output/original/piano.mp3").wait()
     subprocess.Popen("ffmpeg -i ./output/original/drums.wav -b:a 96k -acodec mp3 ./output/original/drums.mp3").wait()
     subprocess.Popen("ffmpeg -i ./output/original/bass.wav -b:a 96k -acodec mp3 ./output/original/bass.mp3").wait()
-    subprocess.Popen("ffmpeg -i ../output/original/other.wav -b:a 96k -acodec mp3 ./output/original/other.mp3").wait()
+    subprocess.Popen("ffmpeg -i ./output/original/other.wav -b:a 96k -acodec mp3 ./output/original/other.mp3").wait()
 
     vocals_path = "./output/original/vocals.mp3"
     piano_path = "./output/original/piano.mp3"
