@@ -132,7 +132,7 @@ def wav2piano():
 
     # run spleeter
     print("running spleeter")
-    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output"]
+    cmd = ["spleeter", "separate", "-p", "spleeter:5stems", "--mwf", "-o", "./output", "./original.wav"]
     subprocess.Popen(cmd).wait()
 
     vocals_path = "./output/vocals.wav"
