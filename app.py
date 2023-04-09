@@ -138,7 +138,7 @@ def wav2piano():
 
     # run spleeter
     print("running spleeter")
-    cmd = ["spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "/output/", "./original.mp3"]
+    cmd = ["sudo", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "/output/", "./original.mp3"]
     subprocess.Popen(cmd).wait(timeout=None)
 
     try:
