@@ -143,7 +143,6 @@ def wav2piano():
     except:
         print("output directory already exists")
 
-    subprocess.Popen(["sudo", "chmod", "777", "output/"]).wait(timeout=None)
     cmd = ["python3", "-m", "spleeter", "separate", "--verbose", "-p", "spleeter:5stems", "--mwf", "-o", "output/", "./original.mp3"]
     subprocess.Popen(cmd).wait(timeout=None)
 
